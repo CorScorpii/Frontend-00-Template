@@ -1,0 +1,58 @@
+<html>
+<style>
+
+</style>
+
+
+
+<div>
+    <h1>图片灰度处理</h1>
+    <input type="file" name="file" id="inputFile"></input>
+</div>
+<div>
+    <h2>原图：</h2>
+    <img id="myImg"></img>
+    <h2>灰度：</h2>
+    <canvas></canvas>
+</div>
+</div>
+<script>
+    let myFile = document.getElementById('inputFile')
+    let myImg = document.getElementById('myImg')
+    let myCanvas = document.querySelector('canvas')
+
+    myFile.onchange = function (e) {
+        let selectedFile = e.target.files[0]
+
+        let reader = new FileReader()
+
+        reader.onload = function (e) {
+            myImg.src = e.target.result
+        }
+
+        reader.readAsDataURL(selectedFile)
+    }
+
+    myImg.addEventListener('load', function () {
+        putImage2GrayCanvas(myImg, myCanvas)
+    })
+
+    function putImage2GrayCanvas(e) {
+        myCanvas.width = myImg.width
+        myCanvas.height = myImg.height
+        let ctx = myCanvas.getContext("2d")
+        ctx.drawImage(myImg, 0, 0)
+        let imgData = ctx.getImageData(0, 0, myImg.width, myImg.height)
+        let data = imgData.data
+        for (let i = 0, n = data.length; i < n; i += 4) {
+            let average = (data[i] + data[i + 1] + data[i + 2]) / 3
+            data[i] = average
+            data[i + 1] = average
+            data[i + 2] = average
+        }
+        ctx.putImageData(imgData, 0, 0)
+    }
+
+</script>
+
+</html>
